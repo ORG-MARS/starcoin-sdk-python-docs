@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>starcoin.sdk.local_account &#8212; starcoin-sdk-python  documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for starcoin.sdk.local_account</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) The Diem Core Contributors</span>
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+<span class="c1"># Copyright (c) The starcoin Core Contributors</span>
+<span class="sd">&quot;&quot;&quot;Provides LocalAccount class for holding local account private key.</span>
+
+<span class="sd">LocalAccount provides operations we need for creating auth key, account address and signing</span>
+<span class="sd">raw transaction.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">starcoin</span> <span class="kn">import</span> <span class="n">starcoin_types</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.auth_key</span> <span class="kn">import</span> <span class="n">AuthKey</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.asymmetric.ed25519</span> <span class="kn">import</span> <span class="n">Ed25519PrivateKey</span><span class="p">,</span> <span class="n">Ed25519PublicKey</span>
+
+
+<div class="viewcode-block" id="LocalAccount"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.local_account.LocalAccount">[docs]</a><span class="k">class</span> <span class="nc">LocalAccount</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;LocalAccount is like a wallet account</span>
+
+<span class="sd">    WARN: This is handy class for creating tests for your application, but may not ideal for your</span>
+<span class="sd">    production code, because it uses a specific implementaion of ed25519 and requires loading your</span>
+<span class="sd">    private key into memory and hand over to code from external.</span>
+<span class="sd">    You should always choose more secure way to handle your private key</span>
+<span class="sd">    (e.g. https://en.wikipedia.org/wiki/Hardware_security_module) in production and do not give</span>
+<span class="sd">    your private key to any code from external if possible.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LocalAccount.generate"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.local_account.LocalAccount.generate">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">generate</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s2">&quot;LocalAccount&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate a random private key and initialize local account&quot;&quot;&quot;</span>
+
+        <span class="n">private_key</span> <span class="o">=</span> <span class="n">Ed25519PrivateKey</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">LocalAccount</span><span class="p">(</span><span class="n">private_key</span><span class="p">)</span></div>
+
+    <span class="n">private_key</span><span class="p">:</span> <span class="n">Ed25519PrivateKey</span>
+    <span class="n">compliance_key</span><span class="p">:</span> <span class="n">Ed25519PrivateKey</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">private_key</span><span class="p">:</span> <span class="n">Ed25519PrivateKey</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">private_key</span> <span class="o">=</span> <span class="n">private_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compliance_key</span> <span class="o">=</span> <span class="n">Ed25519PrivateKey</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">auth_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AuthKey</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">AuthKey</span><span class="o">.</span><span class="n">from_public_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">public_key</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">account_address</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">AccountAddress</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_key</span><span class="o">.</span><span class="n">account_address</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">public_key_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">public_key_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">public_key</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">public_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Ed25519PublicKey</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">private_key</span><span class="o">.</span><span class="n">public_key</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">compliance_public_key_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">public_key_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compliance_key</span><span class="o">.</span><span class="n">public_key</span><span class="p">())</span>
+
+<div class="viewcode-block" id="LocalAccount.sign"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.local_account.LocalAccount.sign">[docs]</a>    <span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txn</span><span class="p">:</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">RawTransaction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">SignedUserTransaction</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Create signed transaction for given raw transaction&quot;&quot;&quot;</span>
+
+        <span class="n">signature</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">private_key</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">raw_transaction_signing_msg</span><span class="p">(</span><span class="n">txn</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">create_signed_transaction</span><span class="p">(</span><span class="n">txn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">public_key_bytes</span><span class="p">,</span> <span class="n">signature</span><span class="p">)</span></div></div>
+    
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">starcoin-sdk-python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, starcoin-core-dev.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

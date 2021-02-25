@@ -1,0 +1,1052 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>starcoin.starcoin_types &#8212; starcoin-sdk-python  documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for starcoin.starcoin_types</h1><div class="highlight"><pre>
+<span></span><span class="c1"># pyre-strict</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">starcoin</span> <span class="kn">import</span> <span class="n">serde_types</span> <span class="k">as</span> <span class="n">st</span>
+<span class="kn">from</span> <span class="nn">starcoin</span> <span class="kn">import</span> <span class="n">lcs</span>
+
+
+<div class="viewcode-block" id="AccessPath"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.AccessPath">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">AccessPath</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">:</span> <span class="s2">&quot;AccountAddress&quot;</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">bytes</span>
+
+<div class="viewcode-block" id="AccessPath.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.AccessPath.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AccessPath</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AccessPath.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.AccessPath.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;AccessPath&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">AccessPath</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="AccountAddress"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.AccountAddress">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">AccountAddress</span><span class="p">:</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">]</span>
+
+<div class="viewcode-block" id="AccountAddress.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.AccountAddress.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AccountAddress</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AccountAddress.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.AccountAddress.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;AccountAddress&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">AccountAddress</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="AccountResource"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.AccountResource">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">AccountResource</span><span class="p">:</span>
+    <span class="n">authentication_key</span><span class="p">:</span> <span class="nb">bytes</span>
+    <span class="n">withdrawal_capability</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;WithdrawCapabilityResource&quot;</span><span class="p">]</span>
+    <span class="n">key_rotation_capability</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;KeyRotationCapabilityResource&quot;</span><span class="p">]</span>
+    <span class="n">received_events</span><span class="p">:</span> <span class="s2">&quot;EventHandle&quot;</span>
+    <span class="n">sent_events</span><span class="p">:</span> <span class="s2">&quot;EventHandle&quot;</span>
+    <span class="n">accept_token_events</span><span class="p">:</span> <span class="s2">&quot;EventHandle&quot;</span>
+    <span class="n">sequence_number</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint64</span>
+
+<div class="viewcode-block" id="AccountResource.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.AccountResource.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AccountResource</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AccountResource.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.AccountResource.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;AccountResource&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">AccountResource</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="BalanceResource"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.BalanceResource">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">BalanceResource</span><span class="p">:</span>
+    <span class="n">token</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint128</span>
+
+<div class="viewcode-block" id="BalanceResource.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.BalanceResource.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BalanceResource</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BalanceResource.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.BalanceResource.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BalanceResource&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">BalanceResource</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+<div class="viewcode-block" id="BlockRewardEvent"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.BlockRewardEvent">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">BlockRewardEvent</span><span class="p">:</span>
+    <span class="n">block_number</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint64</span>
+    <span class="n">block_reward</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint128</span>
+    <span class="n">gas_fees</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint128</span>
+    <span class="n">miner</span><span class="p">:</span> <span class="s2">&quot;AccountAddress&quot;</span>
+
+<div class="viewcode-block" id="BlockRewardEvent.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.BlockRewardEvent.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BlockRewardEvent</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BlockRewardEvent.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.BlockRewardEvent.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BlockMetadata&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">BlockRewardEvent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+    
+<div class="viewcode-block" id="BlockMetadata"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.BlockMetadata">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">BlockMetadata</span><span class="p">:</span>
+    <span class="n">parent_hash</span><span class="p">:</span> <span class="s2">&quot;HashValue&quot;</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint64</span>
+    <span class="n">author</span><span class="p">:</span> <span class="s2">&quot;AccountAddress&quot;</span>
+    <span class="n">auth_key_prefix</span><span class="p">:</span> <span class="nb">bytes</span>
+    <span class="n">uncles</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint64</span>
+    <span class="n">number</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint64</span>
+
+<div class="viewcode-block" id="BlockMetadata.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.BlockMetadata.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BlockMetadata</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BlockMetadata.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.BlockMetadata.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BlockMetadata&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">BlockMetadata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="ChainId"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ChainId">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ChainId</span><span class="p">:</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span>
+
+<div class="viewcode-block" id="ChainId.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ChainId.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ChainId</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ChainId.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ChainId.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ChainId&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">ChainId</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="ChangeSet"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ChangeSet">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ChangeSet</span><span class="p">:</span>
+    <span class="n">write_set</span><span class="p">:</span> <span class="s2">&quot;WriteSet&quot;</span>
+    <span class="n">events</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="s2">&quot;ContractEvent&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="ChangeSet.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ChangeSet.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ChangeSet</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ChangeSet.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ChangeSet.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ChangeSet&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">ChangeSet</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="ContractEvent"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ContractEvent">[docs]</a><span class="k">class</span> <span class="nc">ContractEvent</span><span class="p">:</span>
+    <span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: typing.Sequence[typing.Type[ContractEvent]]</span>
+
+<div class="viewcode-block" id="ContractEvent.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ContractEvent.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ContractEvent</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContractEvent.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ContractEvent.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ContractEvent&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">ContractEvent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="ContractEvent__V0"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ContractEvent__V0">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ContractEvent__V0</span><span class="p">(</span><span class="n">ContractEvent</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;ContractEventV0&quot;</span></div>
+
+
+<span class="n">ContractEvent</span><span class="o">.</span><span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ContractEvent__V0</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="ContractEventV0"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ContractEventV0">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ContractEventV0</span><span class="p">:</span>
+    <span class="n">key</span><span class="p">:</span> <span class="s2">&quot;EventKey&quot;</span>
+    <span class="n">sequence_number</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint64</span>
+    <span class="n">type_tag</span><span class="p">:</span> <span class="s2">&quot;TypeTag&quot;</span>
+    <span class="n">event_data</span><span class="p">:</span> <span class="nb">bytes</span>
+
+<div class="viewcode-block" id="ContractEventV0.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ContractEventV0.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ContractEventV0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContractEventV0.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.ContractEventV0.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ContractEventV0&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">ContractEventV0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="Ed25519PublicKey"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Ed25519PublicKey">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Ed25519PublicKey</span><span class="p">:</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span>
+
+<div class="viewcode-block" id="Ed25519PublicKey.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Ed25519PublicKey.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Ed25519PublicKey</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Ed25519PublicKey.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Ed25519PublicKey.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Ed25519PublicKey&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Ed25519PublicKey</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="Ed25519Signature"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Ed25519Signature">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Ed25519Signature</span><span class="p">:</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span>
+
+<div class="viewcode-block" id="Ed25519Signature.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Ed25519Signature.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Ed25519Signature</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Ed25519Signature.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Ed25519Signature.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Ed25519Signature&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Ed25519Signature</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="EventHandle"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.EventHandle">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">EventHandle</span><span class="p">:</span>
+    <span class="n">count</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint64</span>
+    <span class="n">key</span><span class="p">:</span> <span class="s2">&quot;EventKey&quot;</span>
+
+<div class="viewcode-block" id="EventHandle.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.EventHandle.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EventHandle</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EventHandle.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.EventHandle.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;EventHandle&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">EventHandle</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="EventKey"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.EventKey">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">EventKey</span><span class="p">:</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span>
+
+<div class="viewcode-block" id="EventKey.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.EventKey.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EventKey</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EventKey.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.EventKey.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;EventKey&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">EventKey</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="GeneralMetadata"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.GeneralMetadata">[docs]</a><span class="k">class</span> <span class="nc">GeneralMetadata</span><span class="p">:</span>
+    <span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: typing.Sequence[typing.Type[GeneralMetadata]]</span>
+
+<div class="viewcode-block" id="GeneralMetadata.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.GeneralMetadata.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">GeneralMetadata</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GeneralMetadata.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.GeneralMetadata.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GeneralMetadata&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">GeneralMetadata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="GeneralMetadata__GeneralMetadataVersion0"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.GeneralMetadata__GeneralMetadataVersion0">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GeneralMetadata__GeneralMetadataVersion0</span><span class="p">(</span><span class="n">GeneralMetadata</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;GeneralMetadataV0&quot;</span></div>
+
+
+<span class="n">GeneralMetadata</span><span class="o">.</span><span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">GeneralMetadata__GeneralMetadataVersion0</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="GeneralMetadataV0"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.GeneralMetadataV0">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GeneralMetadataV0</span><span class="p">:</span>
+    <span class="n">to_subaddress</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span>
+    <span class="n">from_subaddress</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span>
+    <span class="n">referenced_event</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">st</span><span class="o">.</span><span class="n">uint64</span><span class="p">]</span>
+
+<div class="viewcode-block" id="GeneralMetadataV0.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.GeneralMetadataV0.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">GeneralMetadataV0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GeneralMetadataV0.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.GeneralMetadataV0.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GeneralMetadataV0&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">GeneralMetadataV0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="HashValue"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.HashValue">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">HashValue</span><span class="p">:</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span>
+
+<div class="viewcode-block" id="HashValue.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.HashValue.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HashValue</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HashValue.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.HashValue.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;HashValue&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">HashValue</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="Identifier"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Identifier">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Identifier</span><span class="p">:</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="Identifier.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Identifier.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Identifier</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Identifier.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Identifier.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Identifier&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Identifier</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="KeyRotationCapabilityResource"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.KeyRotationCapabilityResource">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">KeyRotationCapabilityResource</span><span class="p">:</span>
+    <span class="n">account_address</span><span class="p">:</span> <span class="s2">&quot;AccountAddress&quot;</span>
+
+<div class="viewcode-block" id="KeyRotationCapabilityResource.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.KeyRotationCapabilityResource.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">KeyRotationCapabilityResource</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KeyRotationCapabilityResource.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.KeyRotationCapabilityResource.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;KeyRotationCapabilityResource&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">KeyRotationCapabilityResource</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="Kind"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Kind">[docs]</a><span class="k">class</span> <span class="nc">Kind</span><span class="p">:</span>
+    <span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: typing.Sequence[typing.Type[Kind]]</span>
+
+<div class="viewcode-block" id="Kind.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Kind.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Kind</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Kind.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Kind.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Kind&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Kind</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="Kind__NewHeads"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Kind__NewHeads">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Kind__NewHeads</span><span class="p">(</span><span class="n">Kind</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Kind__Events"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Kind__Events">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Kind__Events</span><span class="p">(</span><span class="n">Kind</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># type: int</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Kind__NewPendingTransactions"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Kind__NewPendingTransactions">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Kind__NewPendingTransactions</span><span class="p">(</span><span class="n">Kind</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># type: int</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Kind__NewMintBlock"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Kind__NewMintBlock">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Kind__NewMintBlock</span><span class="p">(</span><span class="n">Kind</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># type: int</span>
+    <span class="k">pass</span></div>
+
+
+<span class="n">Kind</span><span class="o">.</span><span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Kind__NewHeads</span><span class="p">,</span>
+    <span class="n">Kind__Events</span><span class="p">,</span>
+    <span class="n">Kind__NewPendingTransactions</span><span class="p">,</span>
+    <span class="n">Kind__NewMintBlock</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="Metadata"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Metadata">[docs]</a><span class="k">class</span> <span class="nc">Metadata</span><span class="p">:</span>
+    <span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: typing.Sequence[typing.Type[Metadata]]</span>
+
+<div class="viewcode-block" id="Metadata.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Metadata.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Metadata</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Metadata.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Metadata.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Metadata&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Metadata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="Metadata__Undefined"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Metadata__Undefined">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Metadata__Undefined</span><span class="p">(</span><span class="n">Metadata</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Metadata__GeneralMetadata"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Metadata__GeneralMetadata">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Metadata__GeneralMetadata</span><span class="p">(</span><span class="n">Metadata</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;GeneralMetadata&quot;</span></div>
+
+
+<div class="viewcode-block" id="Metadata__TravelRuleMetadata"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Metadata__TravelRuleMetadata">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Metadata__TravelRuleMetadata</span><span class="p">(</span><span class="n">Metadata</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;TravelRuleMetadata&quot;</span></div>
+
+
+<div class="viewcode-block" id="Metadata__UnstructuredBytesMetadata"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Metadata__UnstructuredBytesMetadata">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Metadata__UnstructuredBytesMetadata</span><span class="p">(</span><span class="n">Metadata</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;UnstructuredBytesMetadata&quot;</span></div>
+
+
+<span class="n">Metadata</span><span class="o">.</span><span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Metadata__Undefined</span><span class="p">,</span>
+    <span class="n">Metadata__GeneralMetadata</span><span class="p">,</span>
+    <span class="n">Metadata__TravelRuleMetadata</span><span class="p">,</span>
+    <span class="n">Metadata__UnstructuredBytesMetadata</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="Module"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Module">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+    <span class="n">code</span><span class="p">:</span> <span class="nb">bytes</span>
+
+<div class="viewcode-block" id="Module.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Module.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Module</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Module.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Module.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Module&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Module</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="MultiEd25519PublicKey"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.MultiEd25519PublicKey">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MultiEd25519PublicKey</span><span class="p">:</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span>
+
+<div class="viewcode-block" id="MultiEd25519PublicKey.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.MultiEd25519PublicKey.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MultiEd25519PublicKey</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultiEd25519PublicKey.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.MultiEd25519PublicKey.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultiEd25519PublicKey&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">MultiEd25519PublicKey</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="MultiEd25519Signature"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.MultiEd25519Signature">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MultiEd25519Signature</span><span class="p">:</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span>
+
+<div class="viewcode-block" id="MultiEd25519Signature.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.MultiEd25519Signature.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MultiEd25519Signature</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultiEd25519Signature.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.MultiEd25519Signature.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultiEd25519Signature&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">MultiEd25519Signature</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="Package"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Package">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Package</span><span class="p">:</span>
+    <span class="n">package_address</span><span class="p">:</span> <span class="s2">&quot;AccountAddress&quot;</span>
+    <span class="n">modules</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="s2">&quot;Module&quot;</span><span class="p">]</span>
+    <span class="n">init_script</span><span class="p">:</span> <span class="s2">&quot;Script&quot;</span>
+
+<div class="viewcode-block" id="Package.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Package.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Package</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Package.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Package.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Package&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Package</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="RawTransaction"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.RawTransaction">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">RawTransaction</span><span class="p">:</span>
+    <span class="n">sender</span><span class="p">:</span> <span class="s2">&quot;AccountAddress&quot;</span>
+    <span class="n">sequence_number</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint64</span>
+    <span class="n">payload</span><span class="p">:</span> <span class="s2">&quot;TransactionPayload&quot;</span>
+    <span class="n">max_gas_amount</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint64</span>
+    <span class="n">gas_unit_price</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint64</span>
+    <span class="n">gas_token_code</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">expiration_timestamp_secs</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint64</span>
+    <span class="n">chain_id</span><span class="p">:</span> <span class="s2">&quot;ChainId&quot;</span>
+
+<div class="viewcode-block" id="RawTransaction.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.RawTransaction.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">RawTransaction</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RawTransaction.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.RawTransaction.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;RawTransaction&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">RawTransaction</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="Script"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Script">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Script</span><span class="p">:</span>
+    <span class="n">code</span><span class="p">:</span> <span class="nb">bytes</span>
+    <span class="n">ty_args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="s2">&quot;TypeTag&quot;</span><span class="p">]</span>
+    <span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="s2">&quot;TransactionArgument&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Script.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Script.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Script</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Script.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Script.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Script&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Script</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="SignedUserTransaction"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.SignedUserTransaction">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">SignedUserTransaction</span><span class="p">:</span>
+    <span class="n">raw_txn</span><span class="p">:</span> <span class="s2">&quot;RawTransaction&quot;</span>
+    <span class="n">authenticator</span><span class="p">:</span> <span class="s2">&quot;TransactionAuthenticator&quot;</span>
+
+<div class="viewcode-block" id="SignedUserTransaction.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.SignedUserTransaction.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SignedUserTransaction</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SignedUserTransaction.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.SignedUserTransaction.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SignedUserTransaction&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">SignedUserTransaction</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="StructTag"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.StructTag">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">StructTag</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">:</span> <span class="s2">&quot;AccountAddress&quot;</span>
+    <span class="n">module</span><span class="p">:</span> <span class="s2">&quot;Identifier&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Identifier&quot;</span>
+    <span class="n">type_params</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="s2">&quot;TypeTag&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="StructTag.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.StructTag.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">StructTag</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StructTag.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.StructTag.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;StructTag&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">StructTag</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="Transaction"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Transaction">[docs]</a><span class="k">class</span> <span class="nc">Transaction</span><span class="p">:</span>
+    <span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: typing.Sequence[typing.Type[Transaction]]</span>
+
+<div class="viewcode-block" id="Transaction.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Transaction.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Transaction</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Transaction.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Transaction.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Transaction&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Transaction</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="Transaction__UserTransaction"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Transaction__UserTransaction">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Transaction__UserTransaction</span><span class="p">(</span><span class="n">Transaction</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;SignedUserTransaction&quot;</span></div>
+
+
+<div class="viewcode-block" id="Transaction__BlockMetadata"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.Transaction__BlockMetadata">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Transaction__BlockMetadata</span><span class="p">(</span><span class="n">Transaction</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;BlockMetadata&quot;</span></div>
+
+
+<span class="n">Transaction</span><span class="o">.</span><span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Transaction__UserTransaction</span><span class="p">,</span>
+    <span class="n">Transaction__BlockMetadata</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="TransactionArgument"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionArgument">[docs]</a><span class="k">class</span> <span class="nc">TransactionArgument</span><span class="p">:</span>
+    <span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: typing.Sequence[typing.Type[TransactionArgument]]</span>
+
+<div class="viewcode-block" id="TransactionArgument.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionArgument.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">TransactionArgument</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TransactionArgument.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionArgument.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TransactionArgument&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">TransactionArgument</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="TransactionArgument__U8"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionArgument__U8">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TransactionArgument__U8</span><span class="p">(</span><span class="n">TransactionArgument</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint8</span></div>
+
+
+<div class="viewcode-block" id="TransactionArgument__U64"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionArgument__U64">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TransactionArgument__U64</span><span class="p">(</span><span class="n">TransactionArgument</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint64</span></div>
+
+
+<div class="viewcode-block" id="TransactionArgument__U128"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionArgument__U128">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TransactionArgument__U128</span><span class="p">(</span><span class="n">TransactionArgument</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">uint128</span></div>
+
+
+<div class="viewcode-block" id="TransactionArgument__Address"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionArgument__Address">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TransactionArgument__Address</span><span class="p">(</span><span class="n">TransactionArgument</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;AccountAddress&quot;</span></div>
+
+
+<div class="viewcode-block" id="TransactionArgument__U8Vector"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionArgument__U8Vector">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TransactionArgument__U8Vector</span><span class="p">(</span><span class="n">TransactionArgument</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span></div>
+
+
+<div class="viewcode-block" id="TransactionArgument__Bool"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionArgument__Bool">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TransactionArgument__Bool</span><span class="p">(</span><span class="n">TransactionArgument</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">bool</span></div>
+
+
+<span class="n">TransactionArgument</span><span class="o">.</span><span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">TransactionArgument__U8</span><span class="p">,</span>
+    <span class="n">TransactionArgument__U64</span><span class="p">,</span>
+    <span class="n">TransactionArgument__U128</span><span class="p">,</span>
+    <span class="n">TransactionArgument__Address</span><span class="p">,</span>
+    <span class="n">TransactionArgument__U8Vector</span><span class="p">,</span>
+    <span class="n">TransactionArgument__Bool</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="TransactionAuthenticator"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionAuthenticator">[docs]</a><span class="k">class</span> <span class="nc">TransactionAuthenticator</span><span class="p">:</span>
+    <span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: typing.Sequence[typing.Type[TransactionAuthenticator]]</span>
+
+<div class="viewcode-block" id="TransactionAuthenticator.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionAuthenticator.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">TransactionAuthenticator</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TransactionAuthenticator.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionAuthenticator.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TransactionAuthenticator&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">TransactionAuthenticator</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="TransactionAuthenticator__Ed25519"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionAuthenticator__Ed25519">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TransactionAuthenticator__Ed25519</span><span class="p">(</span><span class="n">TransactionAuthenticator</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+    <span class="n">public_key</span><span class="p">:</span> <span class="s2">&quot;Ed25519PublicKey&quot;</span>
+    <span class="n">signature</span><span class="p">:</span> <span class="s2">&quot;Ed25519Signature&quot;</span></div>
+
+
+<div class="viewcode-block" id="TransactionAuthenticator__MultiEd25519"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionAuthenticator__MultiEd25519">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TransactionAuthenticator__MultiEd25519</span><span class="p">(</span><span class="n">TransactionAuthenticator</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># type: int</span>
+    <span class="n">public_key</span><span class="p">:</span> <span class="s2">&quot;MultiEd25519PublicKey&quot;</span>
+    <span class="n">signature</span><span class="p">:</span> <span class="s2">&quot;MultiEd25519Signature&quot;</span></div>
+
+
+<span class="n">TransactionAuthenticator</span><span class="o">.</span><span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">TransactionAuthenticator__Ed25519</span><span class="p">,</span>
+    <span class="n">TransactionAuthenticator__MultiEd25519</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="TransactionPayload"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionPayload">[docs]</a><span class="k">class</span> <span class="nc">TransactionPayload</span><span class="p">:</span>
+    <span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: typing.Sequence[typing.Type[TransactionPayload]]</span>
+
+<div class="viewcode-block" id="TransactionPayload.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionPayload.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">TransactionPayload</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TransactionPayload.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionPayload.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TransactionPayload&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">TransactionPayload</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="TransactionPayload__Script"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionPayload__Script">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TransactionPayload__Script</span><span class="p">(</span><span class="n">TransactionPayload</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;Script&quot;</span></div>
+
+
+<div class="viewcode-block" id="TransactionPayload__Package"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TransactionPayload__Package">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TransactionPayload__Package</span><span class="p">(</span><span class="n">TransactionPayload</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;Package&quot;</span></div>
+
+
+<span class="n">TransactionPayload</span><span class="o">.</span><span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">TransactionPayload__Script</span><span class="p">,</span>
+    <span class="n">TransactionPayload__Package</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="TravelRuleMetadata"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TravelRuleMetadata">[docs]</a><span class="k">class</span> <span class="nc">TravelRuleMetadata</span><span class="p">:</span>
+    <span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: typing.Sequence[typing.Type[TravelRuleMetadata]]</span>
+
+<div class="viewcode-block" id="TravelRuleMetadata.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TravelRuleMetadata.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">TravelRuleMetadata</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TravelRuleMetadata.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TravelRuleMetadata.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TravelRuleMetadata&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">TravelRuleMetadata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="TravelRuleMetadata__TravelRuleMetadataVersion0"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TravelRuleMetadata__TravelRuleMetadataVersion0">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TravelRuleMetadata__TravelRuleMetadataVersion0</span><span class="p">(</span><span class="n">TravelRuleMetadata</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;TravelRuleMetadataV0&quot;</span></div>
+
+
+<span class="n">TravelRuleMetadata</span><span class="o">.</span><span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">TravelRuleMetadata__TravelRuleMetadataVersion0</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="TravelRuleMetadataV0"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TravelRuleMetadataV0">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TravelRuleMetadataV0</span><span class="p">:</span>
+    <span class="n">off_chain_reference_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+
+<div class="viewcode-block" id="TravelRuleMetadataV0.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TravelRuleMetadataV0.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">TravelRuleMetadataV0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TravelRuleMetadataV0.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TravelRuleMetadataV0.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TravelRuleMetadataV0&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">TravelRuleMetadataV0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="TypeTag"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag">[docs]</a><span class="k">class</span> <span class="nc">TypeTag</span><span class="p">:</span>
+    <span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: typing.Sequence[typing.Type[TypeTag]]</span>
+
+<div class="viewcode-block" id="TypeTag.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">TypeTag</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TypeTag.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TypeTag&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">TypeTag</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="TypeTag__Bool"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag__Bool">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TypeTag__Bool</span><span class="p">(</span><span class="n">TypeTag</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypeTag__U8"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag__U8">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TypeTag__U8</span><span class="p">(</span><span class="n">TypeTag</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># type: int</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypeTag__U64"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag__U64">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TypeTag__U64</span><span class="p">(</span><span class="n">TypeTag</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># type: int</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypeTag__U128"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag__U128">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TypeTag__U128</span><span class="p">(</span><span class="n">TypeTag</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># type: int</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypeTag__Address"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag__Address">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TypeTag__Address</span><span class="p">(</span><span class="n">TypeTag</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># type: int</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypeTag__Signer"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag__Signer">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TypeTag__Signer</span><span class="p">(</span><span class="n">TypeTag</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># type: int</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TypeTag__Vector"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag__Vector">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TypeTag__Vector</span><span class="p">(</span><span class="n">TypeTag</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">6</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;TypeTag&quot;</span></div>
+
+
+<div class="viewcode-block" id="TypeTag__Struct"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag__Struct">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TypeTag__Struct</span><span class="p">(</span><span class="n">TypeTag</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">7</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;StructTag&quot;</span></div>
+
+
+<span class="n">TypeTag</span><span class="o">.</span><span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">TypeTag__Bool</span><span class="p">,</span>
+    <span class="n">TypeTag__U8</span><span class="p">,</span>
+    <span class="n">TypeTag__U64</span><span class="p">,</span>
+    <span class="n">TypeTag__U128</span><span class="p">,</span>
+    <span class="n">TypeTag__Address</span><span class="p">,</span>
+    <span class="n">TypeTag__Signer</span><span class="p">,</span>
+    <span class="n">TypeTag__Vector</span><span class="p">,</span>
+    <span class="n">TypeTag__Struct</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="UnstructuredBytesMetadata"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.UnstructuredBytesMetadata">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">UnstructuredBytesMetadata</span><span class="p">:</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span>
+
+<div class="viewcode-block" id="UnstructuredBytesMetadata.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.UnstructuredBytesMetadata.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">UnstructuredBytesMetadata</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UnstructuredBytesMetadata.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.UnstructuredBytesMetadata.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;UnstructuredBytesMetadata&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">UnstructuredBytesMetadata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="WithdrawCapabilityResource"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WithdrawCapabilityResource">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">WithdrawCapabilityResource</span><span class="p">:</span>
+    <span class="n">account_address</span><span class="p">:</span> <span class="s2">&quot;AccountAddress&quot;</span>
+
+<div class="viewcode-block" id="WithdrawCapabilityResource.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WithdrawCapabilityResource.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">WithdrawCapabilityResource</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WithdrawCapabilityResource.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WithdrawCapabilityResource.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;WithdrawCapabilityResource&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">WithdrawCapabilityResource</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="WriteOp"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteOp">[docs]</a><span class="k">class</span> <span class="nc">WriteOp</span><span class="p">:</span>
+    <span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: typing.Sequence[typing.Type[WriteOp]]</span>
+
+<div class="viewcode-block" id="WriteOp.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteOp.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">WriteOp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WriteOp.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteOp.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;WriteOp&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">WriteOp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="WriteOp__Deletion"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteOp__Deletion">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">WriteOp__Deletion</span><span class="p">(</span><span class="n">WriteOp</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="WriteOp__Value"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteOp__Value">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">WriteOp__Value</span><span class="p">(</span><span class="n">WriteOp</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span></div>
+
+
+<span class="n">WriteOp</span><span class="o">.</span><span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">WriteOp__Deletion</span><span class="p">,</span>
+    <span class="n">WriteOp__Value</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="WriteSet"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteSet">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">WriteSet</span><span class="p">:</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;WriteSetMut&quot;</span>
+
+<div class="viewcode-block" id="WriteSet.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteSet.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">WriteSet</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WriteSet.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteSet.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;WriteSet&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">WriteSet</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="WriteSetMut"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteSetMut">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">WriteSetMut</span><span class="p">:</span>
+    <span class="n">write_set</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="s2">&quot;AccessPath&quot;</span><span class="p">,</span> <span class="s2">&quot;WriteOp&quot;</span><span class="p">]]</span>
+
+<div class="viewcode-block" id="WriteSetMut.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteSetMut.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">WriteSetMut</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WriteSetMut.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteSetMut.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;WriteSetMut&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">WriteSetMut</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="WriteSetPayload"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteSetPayload">[docs]</a><span class="k">class</span> <span class="nc">WriteSetPayload</span><span class="p">:</span>
+    <span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: typing.Sequence[typing.Type[WriteSetPayload]]</span>
+
+<div class="viewcode-block" id="WriteSetPayload.lcs_serialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteSetPayload.lcs_serialize">[docs]</a>    <span class="k">def</span> <span class="nf">lcs_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lcs</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">WriteSetPayload</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WriteSetPayload.lcs_deserialize"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteSetPayload.lcs_deserialize">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lcs_deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;WriteSetPayload&#39;</span><span class="p">:</span>
+        <span class="n">v</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">lcs</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">WriteSetPayload</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some input bytes were not read&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="WriteSetPayload__Direct"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteSetPayload__Direct">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">WriteSetPayload__Direct</span><span class="p">(</span><span class="n">WriteSetPayload</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># type: int</span>
+    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;ChangeSet&quot;</span></div>
+
+
+<div class="viewcode-block" id="WriteSetPayload__Script"><a class="viewcode-back" href="../../starcoin.starcoin_types.html#starcoin.starcoin_types.WriteSetPayload__Script">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">WriteSetPayload__Script</span><span class="p">(</span><span class="n">WriteSetPayload</span><span class="p">):</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># type: int</span>
+    <span class="n">execute_as</span><span class="p">:</span> <span class="s2">&quot;AccountAddress&quot;</span>
+    <span class="n">script</span><span class="p">:</span> <span class="s2">&quot;Script&quot;</span></div>
+
+
+<span class="n">WriteSetPayload</span><span class="o">.</span><span class="n">VARIANTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">WriteSetPayload__Direct</span><span class="p">,</span>
+    <span class="n">WriteSetPayload__Script</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">starcoin-sdk-python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, starcoin-core-dev.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>starcoin.lcs &#8212; starcoin-sdk-python  documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for starcoin.lcs</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) Facebook, Inc. and its affiliates</span>
+<span class="c1"># SPDX-License-Identifier: MIT OR Apache-2.0</span>
+
+<span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">from</span> <span class="nn">starcoin</span> <span class="kn">import</span> <span class="n">serde_types</span> <span class="k">as</span> <span class="n">st</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">get_type_hints</span>
+
+
+<span class="n">LCS_MAX_LENGTH</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">31</span>
+<span class="n">LCS_MAX_U32</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span> <span class="o">-</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="decode_uleb128_as_u32"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.decode_uleb128_as_u32">[docs]</a><span class="k">def</span> <span class="nf">decode_uleb128_as_u32</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]:</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">shift</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+        <span class="n">byte</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">digit</span> <span class="o">=</span> <span class="n">byte</span> <span class="o">&amp;</span> <span class="mh">0x7F</span>
+        <span class="n">value</span> <span class="o">|=</span> <span class="n">digit</span> <span class="o">&lt;&lt;</span> <span class="n">shift</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">LCS_MAX_U32</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Overflow while parsing uleb128-encoded uint32 value&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">digit</span> <span class="o">==</span> <span class="n">byte</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">shift</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">digit</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Invalid uleb128 number (unexpected zero digit)&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">content</span>
+
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Overflow while parsing uleb128-encoded uint32 value&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="decode_length"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.decode_length">[docs]</a><span class="k">def</span> <span class="nf">decode_length</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]:</span>
+    <span class="n">value</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">decode_uleb128_as_u32</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">LCS_MAX_LENGTH</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Length exceeds the maximum supported value.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span><span class="p">,</span> <span class="n">content</span></div>
+
+
+<div class="viewcode-block" id="decode_variant_index"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.decode_variant_index">[docs]</a><span class="k">def</span> <span class="nf">decode_variant_index</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="n">decode_uleb128_as_u32</span><span class="p">(</span><span class="n">content</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="decode_str"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.decode_str">[docs]</a><span class="k">def</span> <span class="nf">decode_str</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]:</span>
+    <span class="n">strlen</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">decode_length</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+    <span class="n">val</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">strlen</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span> <span class="n">content</span><span class="p">[</span><span class="n">strlen</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">val</span><span class="p">,</span> <span class="n">content</span></div>
+
+
+<div class="viewcode-block" id="decode_bytes"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.decode_bytes">[docs]</a><span class="k">def</span> <span class="nf">decode_bytes</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]:</span>
+    <span class="nb">len</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">decode_length</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+    <span class="n">val</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="p">[:</span><span class="nb">len</span><span class="p">],</span> <span class="n">content</span><span class="p">[</span><span class="nb">len</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">val</span><span class="p">,</span> <span class="n">content</span></div>
+
+
+<div class="viewcode-block" id="encode_u32_as_uleb128"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.encode_u32_as_uleb128">[docs]</a><span class="k">def</span> <span class="nf">encode_u32_as_uleb128</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+    <span class="k">while</span> <span class="n">value</span> <span class="o">&gt;=</span> <span class="mh">0x80</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">+=</span> <span class="p">((</span><span class="n">value</span> <span class="o">&amp;</span> <span class="mh">0x7F</span><span class="p">)</span> <span class="o">|</span> <span class="mh">0x80</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">&gt;&gt;=</span> <span class="mi">7</span>
+    <span class="n">res</span> <span class="o">+=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="encode_length"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.encode_length">[docs]</a><span class="k">def</span> <span class="nf">encode_length</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">LCS_MAX_LENGTH</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Length exceeds the maximum supported value.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">encode_u32_as_uleb128</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="encode_variant_index"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.encode_variant_index">[docs]</a><span class="k">def</span> <span class="nf">encode_variant_index</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">encode_u32_as_uleb128</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="encode_str"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.encode_str">[docs]</a><span class="k">def</span> <span class="nf">encode_str</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">encode_length</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">))</span> <span class="o">+</span> <span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="encode_bytes"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.encode_bytes">[docs]</a><span class="k">def</span> <span class="nf">encode_bytes</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">encode_length</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">))</span> <span class="o">+</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="not_implemented"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.not_implemented">[docs]</a><span class="k">def</span> <span class="nf">not_implemented</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<span class="n">primitive_encode_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">bool</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">uint16</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">uint32</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">uint64</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">uint128</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">int8</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">int16</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">int32</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">int128</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">not_implemented</span><span class="p">(),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">not_implemented</span><span class="p">(),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">unit</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">char</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">not_implemented</span><span class="p">(),</span>
+    <span class="nb">str</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">encode_str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+    <span class="nb">bytes</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">encode_bytes</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">primitive_decode_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">bool</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">bool</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">content</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span>
+        <span class="n">content</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+    <span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span>
+            <span class="n">content</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span>
+        <span class="n">content</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+    <span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">uint16</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">uint16</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span>
+            <span class="n">content</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span>
+        <span class="n">content</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span>
+    <span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">uint32</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span>
+            <span class="n">content</span><span class="p">[:</span><span class="mi">4</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span>
+        <span class="n">content</span><span class="p">[</span><span class="mi">4</span><span class="p">:],</span>
+    <span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">uint64</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">uint64</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span>
+            <span class="n">content</span><span class="p">[:</span><span class="mi">8</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span>
+        <span class="n">content</span><span class="p">[</span><span class="mi">8</span><span class="p">:],</span>
+    <span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">uint128</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">uint128</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span>
+            <span class="n">content</span><span class="p">[:</span><span class="mi">16</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span>
+        <span class="n">content</span><span class="p">[</span><span class="mi">16</span><span class="p">:],</span>
+    <span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">int8</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">content</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+        <span class="n">content</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+    <span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">int16</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">int16</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">content</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+        <span class="n">content</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span>
+    <span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">int32</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">content</span><span class="p">[:</span><span class="mi">4</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+        <span class="n">content</span><span class="p">[</span><span class="mi">4</span><span class="p">:],</span>
+    <span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">content</span><span class="p">[:</span><span class="mi">8</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+        <span class="n">content</span><span class="p">[</span><span class="mi">8</span><span class="p">:],</span>
+    <span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">int128</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">int128</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">content</span><span class="p">[:</span><span class="mi">16</span><span class="p">],</span>
+                                 <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+        <span class="n">content</span><span class="p">[</span><span class="mi">16</span><span class="p">:],</span>
+    <span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="n">not_implemented</span><span class="p">(),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="n">not_implemented</span><span class="p">(),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">unit</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">content</span><span class="p">),</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">char</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="n">not_implemented</span><span class="p">(),</span>
+    <span class="nb">str</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="n">decode_str</span><span class="p">(</span><span class="n">content</span><span class="p">),</span>
+    <span class="nb">bytes</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">content</span><span class="p">:</span> <span class="n">decode_bytes</span><span class="p">(</span><span class="n">content</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="c1"># noqa: C901</span>
+
+
+<div class="viewcode-block" id="serialize"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.serialize">[docs]</a><span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">obj_type</span> <span class="ow">in</span> <span class="n">primitive_encode_map</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">primitive_encode_map</span><span class="p">[</span><span class="n">obj_type</span><span class="p">](</span><span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">):</span>  <span class="c1"># Generic type</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;__args__&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">:</span>  <span class="c1"># Sequence</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="n">item_type</span> <span class="o">=</span> <span class="n">types</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">encode_length</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">serialize</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">item_type</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">])</span>
+
+        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">:</span>  <span class="c1"># Tuple</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)):</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="n">serialize</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">types</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">:</span>  <span class="c1"># Option</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">types</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x01</span><span class="s2">&quot;</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="n">serialize</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">types</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>  <span class="c1"># Map</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+            <span class="n">item_type</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">types</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">types</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">encode_length</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+            <span class="c1"># Sorting by lexicographic order on the serialized item (or equivalently, serialized keys).</span>
+            <span class="n">serialized_items</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                <span class="n">serialize</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">item_type</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">serialized_items</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="n">s</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected type&quot;</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj_type</span><span class="p">):</span>  <span class="c1"># Enum</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;VARIANTS&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected type&quot;</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;INDEX&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wrong Value for the type&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">encode_variant_index</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">INDEX</span><span class="p">)</span>
+            <span class="c1"># Proceed to variant</span>
+            <span class="n">obj_type</span> <span class="o">=</span> <span class="n">obj_type</span><span class="o">.</span><span class="n">VARIANTS</span><span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">INDEX</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj_type</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected type&quot;</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">)</span>
+
+        <span class="c1"># pyre-ignore</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wrong Value for the type&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">)</span>
+
+        <span class="c1"># Content of struct or variant</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="n">obj_type</span><span class="p">)</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="n">get_type_hints</span><span class="p">(</span><span class="n">obj_type</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="n">field_type</span> <span class="o">=</span> <span class="n">types</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">field_value</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">serialize</span><span class="p">(</span><span class="n">field_value</span><span class="p">,</span> <span class="n">field_type</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<span class="c1"># noqa</span>
+<div class="viewcode-block" id="deserialize"><a class="viewcode-back" href="../../starcoin.lcs.html#starcoin.lcs.deserialize">[docs]</a><span class="k">def</span> <span class="nf">deserialize</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">obj_type</span> <span class="ow">in</span> <span class="n">primitive_decode_map</span><span class="p">:</span>
+        <span class="n">res</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">primitive_decode_map</span><span class="p">[</span><span class="n">obj_type</span><span class="p">](</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="p">,</span> <span class="n">content</span>
+
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">):</span>  <span class="c1"># Generic type</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;__args__&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">:</span>  <span class="c1"># Sequence</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="n">item_type</span> <span class="o">=</span> <span class="n">types</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">seqlen</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">decode_length</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">seqlen</span><span class="p">):</span>
+                <span class="n">item</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">deserialize</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">item_type</span><span class="p">)</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">res</span><span class="p">,</span> <span class="n">content</span>
+
+        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">:</span>  <span class="c1"># Tuple</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)):</span>
+                <span class="n">item</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">deserialize</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">types</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="n">content</span>
+
+        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">:</span>  <span class="c1"># Option</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">types</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">content</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="n">tag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">content</span>
+            <span class="k">elif</span> <span class="n">tag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">deserialize</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">types</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wrong tag for Option value&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;__origin__&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>  <span class="c1"># Map</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+            <span class="n">seqlen</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">decode_length</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">previous_serialized_key</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">seqlen</span><span class="p">):</span>
+                <span class="n">previous_content</span> <span class="o">=</span> <span class="n">content</span>
+                <span class="n">key</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">deserialize</span><span class="p">(</span><span class="n">previous_content</span><span class="p">,</span> <span class="n">types</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">serialized_key</span> <span class="o">=</span> <span class="n">previous_content</span><span class="p">[:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)]</span>
+                <span class="n">value</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">deserialize</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">types</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">previous_serialized_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="ow">and</span> <span class="n">previous_serialized_key</span> <span class="o">&gt;=</span> <span class="n">serialized_key</span>
+                <span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Serialized keys in a map must be ordered by increasing lexicographic order&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">previous_serialized_key</span> <span class="o">=</span> <span class="n">serialized_key</span>
+                <span class="n">res</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+            <span class="k">return</span> <span class="n">res</span><span class="p">,</span> <span class="n">content</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected type&quot;</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># handle structs</span>
+        <span class="k">if</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj_type</span><span class="p">):</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="n">obj_type</span><span class="p">)</span>
+            <span class="n">typing_hints</span> <span class="o">=</span> <span class="n">get_type_hints</span><span class="p">(</span><span class="n">obj_type</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                <span class="n">field_type</span> <span class="o">=</span> <span class="n">typing_hints</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="n">field_value</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">deserialize</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">field_type</span><span class="p">)</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field_value</span><span class="p">)</span>
+
+            <span class="n">res</span> <span class="o">=</span> <span class="n">obj_type</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">res</span><span class="p">,</span> <span class="n">content</span>
+
+        <span class="c1"># handle variant</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="s2">&quot;VARIANTS&quot;</span><span class="p">):</span>
+            <span class="n">variant_index</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">decode_variant_index</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+            <span class="n">new_type</span> <span class="o">=</span> <span class="n">obj_type</span><span class="o">.</span><span class="n">VARIANTS</span><span class="p">[</span><span class="n">variant_index</span><span class="p">]</span>
+            <span class="n">res</span><span class="p">,</span> <span class="n">content</span> <span class="o">=</span> <span class="n">deserialize</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">new_type</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">res</span><span class="p">,</span> <span class="n">content</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected type&quot;</span><span class="p">,</span> <span class="n">obj_type</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">starcoin-sdk-python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, starcoin-core-dev.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

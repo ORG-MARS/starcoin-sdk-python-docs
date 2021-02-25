@@ -1,0 +1,404 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>starcoin.sdk package &#8212; starcoin-sdk-python  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="starcoin-sdk-package">
+<h1>starcoin.sdk package<a class="headerlink" href="#starcoin-sdk-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-starcoin.sdk.auth_key">
+<span id="starcoin-sdk-auth-key-module"></span><h2>starcoin.sdk.auth_key module<a class="headerlink" href="#module-starcoin.sdk.auth_key" title="Permalink to this headline">¶</a></h2>
+<p>Provides AuthKey class for holding Diem authentication key and generating account address, prefix from it.</p>
+<dl class="py class">
+<dt id="starcoin.sdk.auth_key.AuthKey">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">starcoin.sdk.auth_key.</span></code><code class="sig-name descname"><span class="pre">AuthKey</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starcoin/sdk/auth_key.html#AuthKey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.auth_key.AuthKey" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Diem Authentication Key</p>
+<p>Wraps authentication key bytes, derives account address and authentication key prefix.</p>
+<dl class="py method">
+<dt id="starcoin.sdk.auth_key.AuthKey.account_address">
+<code class="sig-name descname"><span class="pre">account_address</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.AccountAddress" title="starcoin.starcoin_types.AccountAddress"><span class="pre">starcoin.starcoin_types.AccountAddress</span></a><a class="reference internal" href="_modules/starcoin/sdk/auth_key.html#AuthKey.account_address"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.auth_key.AuthKey.account_address" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="starcoin.sdk.auth_key.AuthKey.data">
+<code class="sig-name descname"><span class="pre">data</span></code><em class="property"><span class="pre">:</span> <span class="pre">bytes</span></em><a class="headerlink" href="#starcoin.sdk.auth_key.AuthKey.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.auth_key.AuthKey.from_public_key">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_public_key</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">public_key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">cryptography.hazmat.primitives.asymmetric.ed25519.Ed25519PublicKey</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#starcoin.sdk.auth_key.AuthKey" title="starcoin.sdk.auth_key.AuthKey"><span class="pre">starcoin.sdk.auth_key.AuthKey</span></a><a class="reference internal" href="_modules/starcoin/sdk/auth_key.html#AuthKey.from_public_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.auth_key.AuthKey.from_public_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.auth_key.AuthKey.hex">
+<code class="sig-name descname"><span class="pre">hex</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/starcoin/sdk/auth_key.html#AuthKey.hex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.auth_key.AuthKey.hex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.auth_key.AuthKey.prefix">
+<code class="sig-name descname"><span class="pre">prefix</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">bytes</span><a class="reference internal" href="_modules/starcoin/sdk/auth_key.html#AuthKey.prefix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.auth_key.AuthKey.prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-starcoin.sdk.client">
+<span id="starcoin-sdk-client-module"></span><h2>starcoin.sdk.client module<a class="headerlink" href="#module-starcoin.sdk.client" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="starcoin.sdk.client.Client">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">starcoin.sdk.client.</span></code><code class="sig-name descname"><span class="pre">Client</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#Client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.Client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Starcoin sdk client</p>
+<dl class="py method">
+<dt id="starcoin.sdk.client.Client.get_account_resource">
+<code class="sig-name descname"><span class="pre">get_account_resource</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.AccountResource" title="starcoin.starcoin_types.AccountResource"><span class="pre">starcoin.starcoin_types.AccountResource</span></a><a class="reference internal" href="_modules/starcoin/sdk/client.html#Client.get_account_resource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.Client.get_account_resource" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.client.Client.get_account_sequence">
+<code class="sig-name descname"><span class="pre">get_account_sequence</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">int</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#Client.get_account_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.Client.get_account_sequence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.client.Client.get_account_token">
+<code class="sig-name descname"><span class="pre">get_account_token</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">int</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#Client.get_account_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.Client.get_account_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.client.Client.get_block_by_number">
+<code class="sig-name descname"><span class="pre">get_block_by_number</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#Client.get_block_by_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.Client.get_block_by_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.client.Client.get_transaction">
+<code class="sig-name descname"><span class="pre">get_transaction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txn_hash</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#Client.get_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.Client.get_transaction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.client.Client.is_account_exist">
+<code class="sig-name descname"><span class="pre">is_account_exist</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#Client.is_account_exist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.Client.is_account_exist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.client.Client.node_info">
+<code class="sig-name descname"><span class="pre">node_info</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#Client.node_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.Client.node_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.client.Client.node_status">
+<code class="sig-name descname"><span class="pre">node_status</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#Client.node_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.Client.node_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.client.Client.sign_txn">
+<code class="sig-name descname"><span class="pre">sign_txn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_txn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#Client.sign_txn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.Client.sign_txn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.client.Client.state_get">
+<code class="sig-name descname"><span class="pre">state_get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bytes</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#Client.state_get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.Client.state_get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.client.Client.submit">
+<code class="sig-name descname"><span class="pre">submit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txn</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.SignedUserTransaction" title="starcoin.starcoin_types.SignedUserTransaction"><span class="pre">starcoin.starcoin_types.SignedUserTransaction</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#Client.submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.Client.submit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt id="starcoin.sdk.client.InvalidServerResponse">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">starcoin.sdk.client.</span></code><code class="sig-name descname"><span class="pre">InvalidServerResponse</span></code><a class="reference internal" href="_modules/starcoin/sdk/client.html#InvalidServerResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.InvalidServerResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="starcoin.sdk.client.JsonResponseError">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">starcoin.sdk.client.</span></code><code class="sig-name descname"><span class="pre">JsonResponseError</span></code><a class="reference internal" href="_modules/starcoin/sdk/client.html#JsonResponseError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.JsonResponseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="starcoin.sdk.client.RpcRequest">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">starcoin.sdk.client.</span></code><code class="sig-name descname"><span class="pre">RpcRequest</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#RpcRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.RpcRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="starcoin.sdk.client.RpcRequest.prepare">
+<code class="sig-name descname"><span class="pre">prepare</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rpc_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starcoin/sdk/client.html#RpcRequest.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.RpcRequest.prepare" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt id="starcoin.sdk.client.StateNotFoundError">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">starcoin.sdk.client.</span></code><code class="sig-name descname"><span class="pre">StateNotFoundError</span></code><a class="reference internal" href="_modules/starcoin/sdk/client.html#StateNotFoundError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.client.StateNotFoundError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-starcoin.sdk.local_account">
+<span id="starcoin-sdk-local-account-module"></span><h2>starcoin.sdk.local_account module<a class="headerlink" href="#module-starcoin.sdk.local_account" title="Permalink to this headline">¶</a></h2>
+<p>Provides LocalAccount class for holding local account private key.</p>
+<p>LocalAccount provides operations we need for creating auth key, account address and signing
+raw transaction.</p>
+<dl class="py class">
+<dt id="starcoin.sdk.local_account.LocalAccount">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">starcoin.sdk.local_account.</span></code><code class="sig-name descname"><span class="pre">LocalAccount</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">private_key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">cryptography.hazmat.primitives.asymmetric.ed25519.Ed25519PrivateKey</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/starcoin/sdk/local_account.html#LocalAccount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.local_account.LocalAccount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>LocalAccount is like a wallet account</p>
+<p>WARN: This is handy class for creating tests for your application, but may not ideal for your
+production code, because it uses a specific implementaion of ed25519 and requires loading your
+private key into memory and hand over to code from external.
+You should always choose more secure way to handle your private key
+(e.g. <a class="reference external" href="https://en.wikipedia.org/wiki/Hardware_security_module">https://en.wikipedia.org/wiki/Hardware_security_module</a>) in production and do not give
+your private key to any code from external if possible.</p>
+<dl class="py method">
+<dt id="starcoin.sdk.local_account.LocalAccount.account_address">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">account_address</span></code><a class="headerlink" href="#starcoin.sdk.local_account.LocalAccount.account_address" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.local_account.LocalAccount.auth_key">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">auth_key</span></code><a class="headerlink" href="#starcoin.sdk.local_account.LocalAccount.auth_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="starcoin.sdk.local_account.LocalAccount.compliance_key">
+<code class="sig-name descname"><span class="pre">compliance_key</span></code><em class="property"><span class="pre">:</span> <span class="pre">cryptography.hazmat.primitives.asymmetric.ed25519.Ed25519PrivateKey</span></em><a class="headerlink" href="#starcoin.sdk.local_account.LocalAccount.compliance_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.local_account.LocalAccount.compliance_public_key_bytes">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">compliance_public_key_bytes</span></code><a class="headerlink" href="#starcoin.sdk.local_account.LocalAccount.compliance_public_key_bytes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.local_account.LocalAccount.generate">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">generate</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#starcoin.sdk.local_account.LocalAccount" title="starcoin.sdk.local_account.LocalAccount"><span class="pre">starcoin.sdk.local_account.LocalAccount</span></a><a class="reference internal" href="_modules/starcoin/sdk/local_account.html#LocalAccount.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.local_account.LocalAccount.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a random private key and initialize local account</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="starcoin.sdk.local_account.LocalAccount.private_key">
+<code class="sig-name descname"><span class="pre">private_key</span></code><em class="property"><span class="pre">:</span> <span class="pre">cryptography.hazmat.primitives.asymmetric.ed25519.Ed25519PrivateKey</span></em><a class="headerlink" href="#starcoin.sdk.local_account.LocalAccount.private_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.local_account.LocalAccount.public_key">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">public_key</span></code><a class="headerlink" href="#starcoin.sdk.local_account.LocalAccount.public_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.local_account.LocalAccount.public_key_bytes">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">public_key_bytes</span></code><a class="headerlink" href="#starcoin.sdk.local_account.LocalAccount.public_key_bytes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="starcoin.sdk.local_account.LocalAccount.sign">
+<code class="sig-name descname"><span class="pre">sign</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txn</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.RawTransaction" title="starcoin.starcoin_types.RawTransaction"><span class="pre">starcoin.starcoin_types.RawTransaction</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.SignedUserTransaction" title="starcoin.starcoin_types.SignedUserTransaction"><span class="pre">starcoin.starcoin_types.SignedUserTransaction</span></a><a class="reference internal" href="_modules/starcoin/sdk/local_account.html#LocalAccount.sign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.local_account.LocalAccount.sign" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create signed transaction for given raw transaction</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-starcoin.sdk.utils">
+<span id="starcoin-sdk-utils-module"></span><h2>starcoin.sdk.utils module<a class="headerlink" href="#module-starcoin.sdk.utils" title="Permalink to this headline">¶</a></h2>
+<p>Utilities for data type converting, construction and hashing.</p>
+<dl class="py exception">
+<dt id="starcoin.sdk.utils.InvalidAccountAddressError">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">InvalidAccountAddressError</span></code><a class="reference internal" href="_modules/starcoin/sdk/utils.html#InvalidAccountAddressError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.InvalidAccountAddressError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="starcoin.sdk.utils.InvalidSubAddressError">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">InvalidSubAddressError</span></code><a class="reference internal" href="_modules/starcoin/sdk/utils.html#InvalidSubAddressError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.InvalidSubAddressError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.account_address">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">account_address</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.AccountAddress" title="starcoin.starcoin_types.AccountAddress"><span class="pre">starcoin.starcoin_types.AccountAddress</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.AccountAddress" title="starcoin.starcoin_types.AccountAddress"><span class="pre">starcoin.starcoin_types.AccountAddress</span></a><a class="reference internal" href="_modules/starcoin/sdk/utils.html#account_address"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.account_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert an account address from hex-encoded or bytes into <cite>starcoin_types.AccountAddress</cite></p>
+<p>Returns given address if it is <cite>starcoin_types.AccountAddress</cite> already</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.account_address_bytes">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">account_address_bytes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.AccountAddress" title="starcoin.starcoin_types.AccountAddress"><span class="pre">starcoin.starcoin_types.AccountAddress</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bytes</span><a class="reference internal" href="_modules/starcoin/sdk/utils.html#account_address_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.account_address_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert <cite>starcoin_types.AccountAddress</cite> or hex-encoded account address into bytes</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.account_address_hex">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">account_address_hex</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.AccountAddress" title="starcoin.starcoin_types.AccountAddress"><span class="pre">starcoin.starcoin_types.AccountAddress</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/starcoin/sdk/utils.html#account_address_hex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.account_address_hex" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert <cite>starcoin_types.AccountAddress</cite> into hex-encoded string</p>
+<p>This function converts given parameter into account address bytes first, then convert bytes
+into hex-encoded string</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.create_signed_transaction">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">create_signed_transaction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txn</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.RawTransaction" title="starcoin.starcoin_types.RawTransaction"><span class="pre">starcoin.starcoin_types.RawTransaction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">public_key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.SignedUserTransaction" title="starcoin.starcoin_types.SignedUserTransaction"><span class="pre">starcoin.starcoin_types.SignedUserTransaction</span></a><a class="reference internal" href="_modules/starcoin/sdk/utils.html#create_signed_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.create_signed_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>create single signed <cite>starcoin_types.SignedTransaction</cite></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.currency_code">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">currency_code</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag" title="starcoin.starcoin_types.TypeTag"><span class="pre">starcoin.starcoin_types.TypeTag</span></a><a class="reference internal" href="_modules/starcoin/sdk/utils.html#currency_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.currency_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts currency code string to starcoin_types.TypeTag</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.hash">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">hash</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b2</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bytes</span><a class="reference internal" href="_modules/starcoin/sdk/utils.html#hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.hash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.hex_to_tuple">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">hex_to_tuple</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">tuple</span><a class="reference internal" href="_modules/starcoin/sdk/utils.html#hex_to_tuple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.hex_to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.payload_lcs_decode">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">payload_lcs_decode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.Script" title="starcoin.starcoin_types.Script"><span class="pre">starcoin.starcoin_types.Script</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.Package" title="starcoin.starcoin_types.Package"><span class="pre">starcoin.starcoin_types.Package</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/starcoin/sdk/utils.html#payload_lcs_decode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.payload_lcs_decode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.public_key_bytes">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">public_key_bytes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">public_key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">cryptography.hazmat.primitives.asymmetric.ed25519.Ed25519PublicKey</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bytes</span><a class="reference internal" href="_modules/starcoin/sdk/utils.html#public_key_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.public_key_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert cryptography.hazmat.primitives.asymmetric.ed25519.Ed25519PublicKey into bytes</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.raw_transaction_signing_msg">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">raw_transaction_signing_msg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txn</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.RawTransaction" title="starcoin.starcoin_types.RawTransaction"><span class="pre">starcoin.starcoin_types.RawTransaction</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bytes</span><a class="reference internal" href="_modules/starcoin/sdk/utils.html#raw_transaction_signing_msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.raw_transaction_signing_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>create signing message from given <cite>starcoin_types.RawTransaction</cite></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.starcoin_hash_seed">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">starcoin_hash_seed</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bytes</span><a class="reference internal" href="_modules/starcoin/sdk/utils.html#starcoin_hash_seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.starcoin_hash_seed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.sub_address">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">sub_address</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bytes</span><a class="reference internal" href="_modules/starcoin/sdk/utils.html#sub_address"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.sub_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert hex-encoded sub-address into bytes</p>
+<p>This function validates bytes length, and raises <cite>InvalidSubAddressError</cite> if length
+does not match sub-address length (8 bytes)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.transaction_hash">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">transaction_hash</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txn</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.SignedUserTransaction" title="starcoin.starcoin_types.SignedUserTransaction"><span class="pre">starcoin.starcoin_types.SignedUserTransaction</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/starcoin/sdk/utils.html#transaction_hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.transaction_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>create transaction hash from given <cite>starcoin_types.SignedTransaction</cite></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="starcoin.sdk.utils.type_tag_to_str">
+<code class="sig-prename descclassname"><span class="pre">starcoin.sdk.utils.</span></code><code class="sig-name descname"><span class="pre">type_tag_to_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="starcoin.starcoin_types.html#starcoin.starcoin_types.TypeTag" title="starcoin.starcoin_types.TypeTag"><span class="pre">starcoin.starcoin_types.TypeTag</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/starcoin/sdk/utils.html#type_tag_to_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#starcoin.sdk.utils.type_tag_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts currency code TypeTag into string</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-starcoin.sdk">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-starcoin.sdk" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">starcoin-sdk-python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, starcoin-core-dev.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/starcoin.sdk.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

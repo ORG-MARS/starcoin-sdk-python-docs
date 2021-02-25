@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>starcoin.sdk.utils &#8212; starcoin-sdk-python  documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for starcoin.sdk.utils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) The Diem Core Contributors</span>
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+<span class="c1"># Copyright (c) The starcoin Core Contributors</span>
+
+<span class="sd">&quot;&quot;&quot;Utilities for data type converting, construction and hashing.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives</span> <span class="kn">import</span> <span class="n">serialization</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.asymmetric</span> <span class="kn">import</span> <span class="n">ed25519</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">starcoin</span> <span class="kn">import</span> <span class="n">starcoin_types</span>
+<span class="kn">from</span> <span class="nn">starcoin</span> <span class="kn">import</span> <span class="n">serde_types</span>
+<span class="kn">from</span> <span class="nn">starcoin</span> <span class="kn">import</span> <span class="n">lcs</span>
+
+<span class="n">SUB_ADDRESS_LEN</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">DIEM_HASH_PREFIX</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;STARCOIN::&quot;</span>
+<span class="n">CORE_CODE_ADDRESS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;0x00000000000000000000000000000001&quot;</span>
+<span class="n">ACCOUNT_ADDRESS_LEN</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">RESOURCE_TAG</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="InvalidAccountAddressError"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.InvalidAccountAddressError">[docs]</a><span class="k">class</span> <span class="nc">InvalidAccountAddressError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="InvalidSubAddressError"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.InvalidSubAddressError">[docs]</a><span class="k">class</span> <span class="nc">InvalidSubAddressError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="hex_to_tuple"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.hex_to_tuple">[docs]</a><span class="k">def</span> <span class="nf">hex_to_tuple</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;0x&quot;</span><span class="p">):</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">serde_types</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="nb">input</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="account_address"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.account_address">[docs]</a><span class="k">def</span> <span class="nf">account_address</span><span class="p">(</span><span class="n">addr</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">starcoin_types</span><span class="o">.</span><span class="n">AccountAddress</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">AccountAddress</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;convert an account address from hex-encoded or bytes into `starcoin_types.AccountAddress`</span>
+
+<span class="sd">    Returns given address if it is `starcoin_types.AccountAddress` already</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">AccountAddress</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">addr</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">AccountAddress</span><span class="p">(</span><span class="n">hex_to_tuple</span><span class="p">(</span><span class="n">addr</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">AccountAddress</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">serde_types</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">addr</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidAccountAddressError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="account_address_hex"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.account_address_hex">[docs]</a><span class="k">def</span> <span class="nf">account_address_hex</span><span class="p">(</span><span class="n">addr</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">starcoin_types</span><span class="o">.</span><span class="n">AccountAddress</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;convert `starcoin_types.AccountAddress` into hex-encoded string</span>
+
+<span class="sd">    This function converts given parameter into account address bytes first, then convert bytes</span>
+<span class="sd">    into hex-encoded string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">account_address_bytes</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="account_address_bytes"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.account_address_bytes">[docs]</a><span class="k">def</span> <span class="nf">account_address_bytes</span><span class="p">(</span><span class="n">addr</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">starcoin_types</span><span class="o">.</span><span class="n">AccountAddress</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;convert `starcoin_types.AccountAddress` or hex-encoded account address into bytes&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">account_address_bytes</span><span class="p">(</span><span class="n">account_address</span><span class="p">(</span><span class="n">addr</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">addr</span><span class="o">.</span><span class="n">value</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="sub_address"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.sub_address">[docs]</a><span class="k">def</span> <span class="nf">sub_address</span><span class="p">(</span><span class="n">addr</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;convert hex-encoded sub-address into bytes</span>
+
+<span class="sd">    This function validates bytes length, and raises `InvalidSubAddressError` if length</span>
+<span class="sd">    does not match sub-address length (8 bytes)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">addr</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="o">!=</span> <span class="n">SUB_ADDRESS_LEN</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidSubAddressError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">addr</span><span class="si">}</span><span class="s2">(len=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span><span class="si">}</span><span class="s2">) is a valid sub-address, sub-address is </span><span class="si">{</span><span class="n">SUB_ADDRESS_LEN</span><span class="si">}</span><span class="s2"> bytes&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="public_key_bytes"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.public_key_bytes">[docs]</a><span class="k">def</span> <span class="nf">public_key_bytes</span><span class="p">(</span><span class="n">public_key</span><span class="p">:</span> <span class="n">ed25519</span><span class="o">.</span><span class="n">Ed25519PublicKey</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;convert cryptography.hazmat.primitives.asymmetric.ed25519.Ed25519PublicKey into bytes&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">public_key</span><span class="o">.</span><span class="n">public_bytes</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">Raw</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">PublicFormat</span><span class="o">.</span><span class="n">Raw</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="currency_code"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.currency_code">[docs]</a><span class="k">def</span> <span class="nf">currency_code</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">TypeTag</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;converts currency code string to starcoin_types.TypeTag&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">TypeTag__Struct</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">starcoin_types</span><span class="o">.</span><span class="n">StructTag</span><span class="p">(</span>
+                <span class="n">address</span><span class="o">=</span><span class="n">account_address</span><span class="p">(</span><span class="n">CORE_CODE_ADDRESS</span><span class="p">),</span>
+                <span class="n">module</span><span class="o">=</span><span class="n">starcoin_types</span><span class="o">.</span><span class="n">Identifier</span><span class="p">(</span><span class="n">code</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">starcoin_types</span><span class="o">.</span><span class="n">Identifier</span><span class="p">(</span><span class="n">code</span><span class="p">),</span>
+                <span class="n">type_params</span><span class="o">=</span><span class="p">[],</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown currency code type: </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="type_tag_to_str"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.type_tag_to_str">[docs]</a><span class="k">def</span> <span class="nf">type_tag_to_str</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">TypeTag</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;converts currency code TypeTag into string&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">TypeTag__Struct</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">TypeTag__Struct</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown currency code type: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown currency code type: </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_signed_transaction"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.create_signed_transaction">[docs]</a><span class="k">def</span> <span class="nf">create_signed_transaction</span><span class="p">(</span>
+    <span class="n">txn</span><span class="p">:</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">RawTransaction</span><span class="p">,</span> <span class="n">public_key</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">signature</span><span class="p">:</span> <span class="nb">bytes</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">SignedUserTransaction</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;create single signed `starcoin_types.SignedTransaction`&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">SignedUserTransaction</span><span class="p">(</span>
+        <span class="n">raw_txn</span><span class="o">=</span><span class="n">txn</span><span class="p">,</span>
+        <span class="n">authenticator</span><span class="o">=</span><span class="n">starcoin_types</span><span class="o">.</span><span class="n">TransactionAuthenticator__Ed25519</span><span class="p">(</span>
+            <span class="n">public_key</span><span class="o">=</span><span class="n">starcoin_types</span><span class="o">.</span><span class="n">Ed25519PublicKey</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">public_key</span><span class="p">),</span>
+            <span class="n">signature</span><span class="o">=</span><span class="n">starcoin_types</span><span class="o">.</span><span class="n">Ed25519Signature</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">signature</span><span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="raw_transaction_signing_msg"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.raw_transaction_signing_msg">[docs]</a><span class="k">def</span> <span class="nf">raw_transaction_signing_msg</span><span class="p">(</span><span class="n">txn</span><span class="p">:</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">RawTransaction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;create signing message from given `starcoin_types.RawTransaction`&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">starcoin_hash_seed</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;RawUserTransaction&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">txn</span><span class="o">.</span><span class="n">lcs_serialize</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="transaction_hash"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.transaction_hash">[docs]</a><span class="k">def</span> <span class="nf">transaction_hash</span><span class="p">(</span><span class="n">txn</span><span class="p">:</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">SignedUserTransaction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;create transaction hash from given `starcoin_types.SignedTransaction`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">user_txn</span> <span class="o">=</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">Transaction__UserTransaction</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">txn</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">starcoin_hash_seed</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;Transaction&quot;</span><span class="p">),</span> <span class="n">user_txn</span><span class="o">.</span><span class="n">lcs_serialize</span><span class="p">())</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="starcoin_hash_seed"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.starcoin_hash_seed">[docs]</a><span class="k">def</span> <span class="nf">starcoin_hash_seed</span><span class="p">(</span><span class="n">typ</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">DIEM_HASH_PREFIX</span><span class="p">,</span> <span class="n">typ</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hash"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.hash">[docs]</a><span class="k">def</span> <span class="nf">hash</span><span class="p">(</span><span class="n">b1</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">b2</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha3_256</span><span class="p">()</span>
+    <span class="nb">hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span>
+    <span class="nb">hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">b2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">hash</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="payload_lcs_decode"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.utils.payload_lcs_decode">[docs]</a><span class="k">def</span> <span class="nf">payload_lcs_decode</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">starcoin_types</span><span class="o">.</span><span class="n">Script</span><span class="p">,</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">Package</span><span class="p">]:</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">TransactionPayload</span><span class="o">.</span><span class="n">lcs_deserialize</span><span class="p">(</span>
+        <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">return</span> <span class="n">payload</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">starcoin-sdk-python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, starcoin-core-dev.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

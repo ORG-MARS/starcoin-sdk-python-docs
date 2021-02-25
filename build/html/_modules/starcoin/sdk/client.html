@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>starcoin.sdk.client &#8212; starcoin-sdk-python  documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for starcoin.sdk.client</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) The starcoin Core Contributors</span>
+
+<span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Request</span>
+<span class="kn">from</span> <span class="nn">starcoin</span> <span class="kn">import</span> <span class="n">starcoin_types</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+
+
+<div class="viewcode-block" id="InvalidServerResponse"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.InvalidServerResponse">[docs]</a><span class="k">class</span> <span class="nc">InvalidServerResponse</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="StateNotFoundError"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.StateNotFoundError">[docs]</a><span class="k">class</span> <span class="nc">StateNotFoundError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="JsonResponseError"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.JsonResponseError">[docs]</a><span class="k">class</span> <span class="nc">JsonResponseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Starcoin sdk client</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">url</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">RpcRequest</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Client.node_info"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.Client.node_info">[docs]</a>    <span class="k">def</span> <span class="nf">node_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">operation</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;rpc_method&quot;</span><span class="p">:</span> <span class="s2">&quot;node.info&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__execute</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.node_status"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.Client.node_status">[docs]</a>    <span class="k">def</span> <span class="nf">node_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">operation</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;rpc_method&quot;</span><span class="p">:</span> <span class="s2">&quot;node.status&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__execute</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="Client.get_transaction"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.Client.get_transaction">[docs]</a>    <span class="k">def</span> <span class="nf">get_transaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txn_hash</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">operation</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;rpc_method&quot;</span><span class="p">:</span> <span class="s2">&quot;chain.get_transaction&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">txn_hash</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__execute</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="Client.get_block_by_number"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.Client.get_block_by_number">[docs]</a>    <span class="k">def</span> <span class="nf">get_block_by_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">operation</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;rpc_method&quot;</span><span class="p">:</span> <span class="s2">&quot;chain.get_block_by_number&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">number</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__execute</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="Client.submit"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.Client.submit">[docs]</a>    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txn</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">starcoin_types</span><span class="o">.</span><span class="n">SignedUserTransaction</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">txn</span><span class="p">,</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">SignedUserTransaction</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">txn</span><span class="o">.</span><span class="n">lcs_serialize</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">())</span>
+
+        <span class="n">operation</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;rpc_method&quot;</span><span class="p">:</span> <span class="s2">&quot;txpool.submit_hex_transaction&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">txn</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__execute</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Client.state_get"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.Client.state_get">[docs]</a>    <span class="k">def</span> <span class="nf">state_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="n">operation</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;rpc_method&quot;</span><span class="p">:</span> <span class="s2">&quot;state.get&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">access_path</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__execute</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">StateNotFoundError</span><span class="p">(</span><span class="s2">&quot;State not found&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+    
+<div class="viewcode-block" id="Client.is_account_exist"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.Client.is_account_exist">[docs]</a>    <span class="k">def</span> <span class="nf">is_account_exist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_account_resource</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">StateNotFoundError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Client.get_account_sequence"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.Client.get_account_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">get_account_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">account_resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_account_resource</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">StateNotFoundError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">account_resource</span><span class="o">.</span><span class="n">sequence_number</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.get_account_token"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.Client.get_account_token">[docs]</a>    <span class="k">def</span> <span class="nf">get_account_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">type_parm</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">::</span><span class="si">{}</span><span class="s2">::</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">CORE_CODE_ADDRESS</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        
+        <span class="n">struct_tag</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">::</span><span class="si">{}</span><span class="s2">::</span><span class="si">{}</span><span class="s2">&lt;</span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">CORE_CODE_ADDRESS</span><span class="p">,</span>
+                                             <span class="s2">&quot;Account&quot;</span><span class="p">,</span> <span class="s2">&quot;Balance&quot;</span><span class="p">,</span> <span class="n">type_parm</span><span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span>
+                                 <span class="n">utils</span><span class="o">.</span><span class="n">RESOURCE_TAG</span><span class="p">,</span> <span class="n">struct_tag</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_get</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">balance</span> <span class="o">=</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">BalanceResource</span><span class="o">.</span><span class="n">lcs_deserialize</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">balance</span><span class="o">.</span><span class="n">token</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.get_account_resource"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.Client.get_account_resource">[docs]</a>    <span class="k">def</span> <span class="nf">get_account_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">AccountResource</span><span class="p">:</span>
+        <span class="n">struct_tag</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">::</span><span class="si">{}</span><span class="s2">::</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">CORE_CODE_ADDRESS</span><span class="p">,</span> <span class="s2">&quot;Account&quot;</span><span class="p">,</span> <span class="s2">&quot;Account&quot;</span><span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">RESOURCE_TAG</span><span class="p">,</span> <span class="n">struct_tag</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_get</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">account_resource</span> <span class="o">=</span> <span class="n">starcoin_types</span><span class="o">.</span><span class="n">AccountResource</span><span class="o">.</span><span class="n">lcs_deserialize</span><span class="p">(</span>
+            <span class="n">state</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">account_resource</span></div>
+
+<div class="viewcode-block" id="Client.sign_txn"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.Client.sign_txn">[docs]</a>    <span class="k">def</span> <span class="nf">sign_txn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_txn</span><span class="p">,</span> <span class="n">signer</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+    
+    <span class="c1"># todo: error code handle</span>
+
+    <span class="k">def</span> <span class="nf">__execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">prepare</span><span class="p">(</span>
+            <span class="n">rpc_method</span><span class="o">=</span><span class="n">operation</span><span class="p">[</span><span class="s2">&quot;rpc_method&quot;</span><span class="p">],</span> <span class="n">params</span><span class="o">=</span><span class="n">operation</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">])</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">json</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidServerResponse</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Parse response as json failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">, response: </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">JsonResponseError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Response:</span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;result&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RpcRequest"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.RpcRequest">[docs]</a><span class="k">class</span> <span class="nc">RpcRequest</span><span class="p">():</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setting</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span>
+            <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;request_id&quot;</span><span class="p">:</span> <span class="s2">&quot;sdk-client&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">},</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="RpcRequest.prepare"><a class="viewcode-back" href="../../../starcoin.sdk.html#starcoin.sdk.client.RpcRequest.prepare">[docs]</a>    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rpc_method</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span>
+        <span class="n">post_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;jsonrpc&quot;</span><span class="p">:</span> <span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting</span><span class="p">[</span><span class="s2">&quot;request_id&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">rpc_method</span><span class="p">,</span>
+            <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">]</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">post_data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">req</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">starcoin-sdk-python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, starcoin-core-dev.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
